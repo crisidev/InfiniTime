@@ -3,7 +3,7 @@
       "sources": [
          {
             "file": "JetBrainsMono-Bold.ttf",
-            "range": "0x20-0x7e, 0x410-0x44f, 0xB0"
+            "range": "0x20-0x7e, 0x410-0x44f, 0xB0, 0x276F"
          },
          {
             "file": "FontAwesome5-Solid+Brands+Regular.woff",
@@ -12,6 +12,16 @@
       ],
       "bpp": 2,
       "size": 20
+   },
+   "jetbrains_mono_32": {
+      "sources": [
+         {
+            "file": "JetBrainsMono-Regular.ttf",
+            "range": "0x20, 0x30-0x3a, 0x41, 0x4d, 0x50"
+         }
+      ],
+      "bpp": 2,
+      "size": 32
    },
    "jetbrains_mono_42": {
       "sources": [
