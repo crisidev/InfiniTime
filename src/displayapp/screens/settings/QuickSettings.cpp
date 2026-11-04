@@ -1,4 +1,5 @@
 #include "displayapp/screens/settings/QuickSettings.h"
+#include "displayapp/screens/Styles.h"
 #include "displayapp/DisplayApp.h"
 #include "displayapp/screens/Symbols.h"
 #include "displayapp/screens/BatteryIcon.h"
@@ -44,6 +45,7 @@ QuickSettings::QuickSettings(Pinetime::Applications::DisplayApp* app,
 
   // Time
   label_time = lv_label_create(lv_scr_act(), nullptr);
+  lv_label_set_recolor(label_time, true);
   lv_label_set_align(label_time, LV_LABEL_ALIGN_CENTER);
   lv_obj_align(label_time, lv_scr_act(), LV_ALIGN_IN_TOP_LEFT, 0, 0);
 
@@ -84,9 +86,8 @@ QuickSettings::QuickSettings(Pinetime::Applications::DisplayApp* app,
   btn3->user_data = this;
   lv_obj_set_event_cb(btn3, ButtonEventHandler);
   lv_obj_add_style(btn3, LV_BTN_PART_MAIN, &btn_style);
-  lv_obj_set_style_local_bg_color(btn3, LV_BTN_PART_MAIN, static_cast<lv_state_t>(ButtonState::NotificationsOff), LV_COLOR_RED);
-  static constexpr lv_color_t violet = LV_COLOR_MAKE(0x60, 0x00, 0xff);
-  lv_obj_set_style_local_bg_color(btn3, LV_BTN_PART_MAIN, static_cast<lv_state_t>(ButtonState::Sleep), violet);
+  SetButtonColor(btn3, Colors::red, static_cast<lv_state_t>(ButtonState::NotificationsOff));
+  SetButtonColor(btn3, Colors::magenta, static_cast<lv_state_t>(ButtonState::Sleep));
   lv_obj_set_size(btn3, buttonWidth, buttonHeight);
   lv_obj_align(btn3, nullptr, LV_ALIGN_IN_BOTTOM_LEFT, buttonXOffset, 0);
 
@@ -129,7 +130,7 @@ void QuickSettings::Refresh() {
   statusIcons.Update();
   currentDateTime = std::chrono::time_point_cast<std::chrono::minutes>(dateTimeController.CurrentDateTime());
   if (currentDateTime.IsUpdated()) {
-    lv_label_set_text(label_time, dateTimeController.FormattedTime().c_str());
+    lv_label_set_text_fmt(label_time, "%s %s", promptArrows, dateTimeController.FormattedTime().c_str());
   }
 }
 

@@ -6,32 +6,21 @@
 #include "components/heartrate/HeartRateController.h"
 #include "components/motion/MotionController.h"
 #include "components/settings/Settings.h"
+#include "displayapp/InfiniTimeTheme.h"
+#include "displayapp/screens/Styles.h"
 
 using namespace Pinetime::Applications::Screens;
 
 namespace {
-  // Tokyo Night ("night" variant) palette
-  constexpr lv_color_t bg = LV_COLOR_MAKE(0x1a, 0x1b, 0x26);
-  constexpr lv_color_t fg = LV_COLOR_MAKE(0xc0, 0xca, 0xf5);
-  constexpr lv_color_t comment = LV_COLOR_MAKE(0x56, 0x5f, 0x89);
-  constexpr lv_color_t blue = LV_COLOR_MAKE(0x7a, 0xa2, 0xf7);
-  constexpr lv_color_t cyan = LV_COLOR_MAKE(0x7d, 0xcf, 0xff);
-  constexpr lv_color_t green = LV_COLOR_MAKE(0x9e, 0xce, 0x6a);
-  constexpr lv_color_t yellow = LV_COLOR_MAKE(0xe0, 0xaf, 0x68);
-  constexpr lv_color_t orange = LV_COLOR_MAKE(0xff, 0x9e, 0x64);
-  constexpr lv_color_t red = LV_COLOR_MAKE(0xf7, 0x76, 0x8e);
-
-  // Recolor strings below use the same hex values inline (tags are #565f89 = comment)
-  constexpr const char* prompt = "#f7768e ❯##e0af68 ❯##9ece6a ❯# #7aa2f7 ~#";
-
+  // Recolor strings use the Colors:: hex values inline (tags are #565f89 = Colors::comment)
   lv_color_t BatteryColor(int percent) {
     if (percent >= 50) {
-      return green;
+      return Colors::green;
     }
     if (percent >= 20) {
-      return yellow;
+      return Colors::yellow;
     }
-    return red;
+    return Colors::red;
   }
 
   void SetTextColor(lv_obj_t* label, lv_color_t color) {
@@ -62,21 +51,13 @@ WatchFaceTokyoNight::WatchFaceTokyoNight(Controllers::DateTime& dateTimeControll
     heartRateController {heartRateController},
     motionController {motionController} {
 
-  // A full-screen object instead of styling lv_scr_act(), so the background
-  // goes away with lv_obj_clean() and doesn't leak into the next screen
-  background = lv_obj_create(lv_scr_act(), nullptr);
-  lv_obj_set_size(background, LV_HOR_RES, LV_VER_RES);
-  lv_obj_set_style_local_bg_color(background, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, bg);
-  lv_obj_set_style_local_radius(background, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-  lv_obj_set_style_local_border_width(background, LV_OBJ_PART_MAIN, LV_STATE_DEFAULT, 0);
-
   // First line: "❯❯❯ ~ HH:MM:SS", the time in a font just small enough to fit
-  labelTime = CreateRow(lv_scr_act(), blue);
+  labelTime = CreateRow(lv_scr_act(), Colors::blue);
   lv_obj_set_style_local_text_font(labelTime, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &jetbrains_mono_32);
   lv_obj_set_pos(labelTime, 76, 7);
 
-  labelPrompt = CreateRow(lv_scr_act(), fg);
-  lv_label_set_text_static(labelPrompt, prompt);
+  labelPrompt = CreateRow(lv_scr_act(), Colors::fg);
+  lv_label_set_text_fmt(labelPrompt, "%s #7aa2f7 ~#", promptArrows);
 
   // Everything else, one empty line below the time
   container = lv_cont_create(lv_scr_act(), nullptr);
@@ -89,14 +70,14 @@ WatchFaceTokyoNight::WatchFaceTokyoNight(Controllers::DateTime& dateTimeControll
   lv_obj_set_style_local_pad_right(container, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, 4);
   lv_obj_set_style_local_bg_opa(container, LV_CONT_PART_MAIN, LV_STATE_DEFAULT, LV_OPA_TRANSP);
 
-  labelDate = CreateRow(container, fg);
-  batteryValue = CreateRow(container, green);
-  stepValue = CreateRow(container, orange);
-  heartbeatValue = CreateRow(container, red);
-  connectState = CreateRow(container, cyan);
+  labelDate = CreateRow(container, Colors::fg);
+  batteryValue = CreateRow(container, Colors::green);
+  stepValue = CreateRow(container, Colors::orange);
+  heartbeatValue = CreateRow(container, Colors::red);
+  connectState = CreateRow(container, Colors::cyan);
   // Empty line before the final prompt
-  lv_label_set_text_static(CreateRow(container, fg), " ");
-  labelPrompt2 = CreateRow(container, fg);
+  lv_label_set_text_static(CreateRow(container, Colors::fg), " ");
+  labelPrompt2 = CreateRow(container, Colors::fg);
 
   lv_obj_set_pos(container, 0, 57);
 
@@ -118,7 +99,7 @@ void WatchFaceTokyoNight::Refresh() {
     if (notificationState.Get()) {
       lv_label_set_text_static(labelPrompt2, "#bb9af7 You have new mail.#");
     } else {
-      lv_label_set_text_fmt(labelPrompt2, "%s #565f89 _#", prompt);
+      lv_label_set_text_fmt(labelPrompt2, "%s #7aa2f7 ~# #565f89 _#", promptArrows);
     }
   }
 
@@ -174,10 +155,10 @@ void WatchFaceTokyoNight::Refresh() {
   heartbeatRunning = heartRateController.State() != Controllers::HeartRateController::States::Stopped;
   if (heartbeat.IsUpdated() || heartbeatRunning.IsUpdated()) {
     if (heartbeatRunning.Get()) {
-      SetTextColor(heartbeatValue, red);
+      SetTextColor(heartbeatValue, Colors::red);
       lv_label_set_text_fmt(heartbeatValue, "#565f89 hr#    %d bpm", heartbeat.Get());
     } else {
-      SetTextColor(heartbeatValue, comment);
+      SetTextColor(heartbeatValue, Colors::comment);
       lv_label_set_text_static(heartbeatValue, "#565f89 hr#    ---");
     }
   }
@@ -186,13 +167,13 @@ void WatchFaceTokyoNight::Refresh() {
   bleRadioEnabled = bleController.IsRadioEnabled();
   if (bleState.IsUpdated() || bleRadioEnabled.IsUpdated()) {
     if (!bleRadioEnabled.Get()) {
-      SetTextColor(connectState, comment);
+      SetTextColor(connectState, Colors::comment);
       lv_label_set_text_static(connectState, "#565f89 ble#   off");
     } else if (bleState.Get()) {
-      SetTextColor(connectState, cyan);
+      SetTextColor(connectState, Colors::cyan);
       lv_label_set_text_static(connectState, "#565f89 ble#   connected");
     } else {
-      SetTextColor(connectState, comment);
+      SetTextColor(connectState, Colors::comment);
       lv_label_set_text_static(connectState, "#565f89 ble#   disconnected");
     }
   }

@@ -1,4 +1,5 @@
 #include "displayapp/screens/Error.h"
+#include "displayapp/InfiniTimeTheme.h"
 
 using namespace Pinetime::Applications::Screens;
 
@@ -12,7 +13,7 @@ namespace {
 Error::Error(System::BootErrors error) {
 
   lv_obj_t* warningLabel = lv_label_create(lv_scr_act(), nullptr);
-  lv_obj_set_style_local_text_color(warningLabel, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_ORANGE);
+  lv_obj_set_style_local_text_color(warningLabel, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, Colors::orange);
   lv_label_set_text_static(warningLabel, "Warning");
   lv_obj_align(warningLabel, nullptr, LV_ALIGN_IN_TOP_MID, 0, 0);
 
@@ -38,7 +39,7 @@ Error::Error(System::BootErrors error) {
   lv_obj_align(btnOk, lv_scr_act(), LV_ALIGN_IN_BOTTOM_MID, 0, 0);
   lv_obj_t* lblOk = lv_label_create(btnOk, nullptr);
   lv_label_set_text_static(lblOk, "Proceed");
-  lv_obj_set_style_local_bg_color(btnOk, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_ORANGE);
+  SetButtonColor(btnOk, Colors::orange);
 }
 
 void Error::ButtonEventHandler() {

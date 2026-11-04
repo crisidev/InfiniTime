@@ -79,7 +79,7 @@ Alarm::Alarm(Controllers::AlarmController& alarmController,
   lv_obj_set_event_cb(btnStop, btnEventHandler);
   lv_obj_set_size(btnStop, 240, 70);
   lv_obj_align(btnStop, lv_scr_act(), LV_ALIGN_IN_BOTTOM_LEFT, 0, 0);
-  lv_obj_set_style_local_bg_color(btnStop, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_RED);
+  SetButtonColor(btnStop, Colors::red);
   txtStop = lv_label_create(btnStop, nullptr);
   lv_label_set_text_static(txtStop, Symbols::stop);
   lv_obj_set_hidden(btnStop, true);
@@ -93,16 +93,16 @@ Alarm::Alarm(Controllers::AlarmController& alarmController,
   lv_obj_align(btnRecur, lv_scr_act(), LV_ALIGN_IN_BOTTOM_RIGHT, 0, 0);
   txtRecur = lv_label_create(btnRecur, nullptr);
   SetRecurButtonState();
-  lv_obj_set_style_local_bg_color(btnRecur, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, bgColor);
+  SetButtonColor(btnRecur, bgColor);
 
   btnInfo = lv_btn_create(lv_scr_act(), nullptr);
   btnInfo->user_data = this;
   lv_obj_set_event_cb(btnInfo, btnEventHandler);
   lv_obj_set_size(btnInfo, 50, 50);
   lv_obj_align(btnInfo, lv_scr_act(), LV_ALIGN_IN_TOP_MID, 0, -4);
-  lv_obj_set_style_local_bg_color(btnInfo, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, bgColor);
+  SetButtonColor(btnInfo, bgColor);
   lv_obj_set_style_local_border_width(btnInfo, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 4);
-  lv_obj_set_style_local_border_color(btnInfo, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_BLACK);
+  lv_obj_set_style_local_border_color(btnInfo, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, Colors::background);
 
   lv_obj_t* txtInfo = lv_label_create(btnInfo, nullptr);
   lv_label_set_text_static(txtInfo, "i");
@@ -249,7 +249,7 @@ void Alarm::ShowInfo() {
   lv_obj_set_width(btnMessage, 150);
   lv_obj_align(btnMessage, lv_scr_act(), LV_ALIGN_CENTER, 0, 0);
   txtMessage = lv_label_create(btnMessage, nullptr);
-  lv_obj_set_style_local_bg_color(btnMessage, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_NAVY);
+  SetButtonColor(btnMessage, Colors::bg);
 
   if (alarmController.IsEnabled()) {
     auto timeToAlarm = alarmController.SecondsToAlarm();

@@ -107,8 +107,8 @@ StopWatch::~StopWatch() {
 }
 
 void StopWatch::DisplayPaused() {
-  lv_obj_set_style_local_bg_color(btnStopLap, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_RED);
-  lv_obj_set_style_local_bg_color(btnPlayPause, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, Colors::blue);
+  SetButtonColor(btnStopLap, Colors::red);
+  SetButtonColor(btnPlayPause, Colors::blue);
   lv_label_set_text_static(txtPlayPause, Symbols::play);
   lv_label_set_text_static(txtStopLap, Symbols::stop);
 }
@@ -116,8 +116,8 @@ void StopWatch::DisplayPaused() {
 void StopWatch::DisplayStarted() {
   lv_obj_set_state(time, LV_STATE_DEFAULT);
   lv_obj_set_state(msecTime, LV_STATE_DEFAULT);
-  lv_obj_set_style_local_bg_color(btnPlayPause, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, Colors::bgAlt);
-  lv_obj_set_style_local_bg_color(btnStopLap, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, Colors::bgAlt);
+  SetButtonColor(btnPlayPause, Colors::bgAlt);
+  SetButtonColor(btnStopLap, Colors::bgAlt);
 
   lv_label_set_text_static(txtPlayPause, Symbols::pause);
   lv_label_set_text_static(txtStopLap, Symbols::lapsFlag);
@@ -129,7 +129,7 @@ void StopWatch::DisplayStarted() {
 void StopWatch::DisplayCleared() {
   lv_obj_set_state(time, LV_STATE_DISABLED);
   lv_obj_set_state(msecTime, LV_STATE_DISABLED);
-  lv_obj_set_style_local_bg_color(btnPlayPause, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, Colors::blue);
+  SetButtonColor(btnPlayPause, Colors::blue);
 
   lv_label_set_text_static(time, "00:00");
   lv_label_set_text_static(msecTime, "00");

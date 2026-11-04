@@ -28,7 +28,7 @@ Steps::Steps(Controllers::MotionController& motionController, Controllers::Setti
   lv_obj_align(stepsArc, nullptr, LV_ALIGN_CENTER, 0, 0);
 
   lSteps = lv_label_create(lv_scr_act(), nullptr);
-  lv_obj_set_style_local_text_color(lSteps, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_LIME);
+  lv_obj_set_style_local_text_color(lSteps, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, Colors::green);
   lv_obj_set_style_local_text_font(lSteps, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &jetbrains_mono_42);
   lv_obj_align(lSteps, nullptr, LV_ALIGN_CENTER, 0, -40);
   lv_obj_set_auto_realign(lSteps, true);
@@ -45,7 +45,7 @@ Steps::Steps(Controllers::MotionController& motionController, Controllers::Setti
   lv_obj_set_auto_realign(lStepsYesterday, true);
 
   lStepsGoal = lv_label_create(lv_scr_act(), nullptr);
-  lv_obj_set_style_local_text_color(lStepsGoal, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_CYAN);
+  lv_obj_set_style_local_text_color(lStepsGoal, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, Colors::cyan);
   lv_label_set_align(lStepsGoal, LV_LABEL_ALIGN_CENTER);
   lv_obj_align(lStepsGoal, lSteps, LV_ALIGN_OUT_BOTTOM_MID, 0, 40);
   lv_obj_set_auto_realign(lStepsGoal, true);
@@ -61,7 +61,7 @@ Steps::Steps(Controllers::MotionController& motionController, Controllers::Setti
   lv_label_set_text_static(resetButtonLabel, "Reset");
 
   tripLabel = lv_label_create(lv_scr_act(), nullptr);
-  lv_obj_set_style_local_text_color(tripLabel, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_YELLOW);
+  lv_obj_set_style_local_text_color(tripLabel, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, Colors::yellow);
   lv_obj_align(tripLabel, lStepsGoal, LV_ALIGN_IN_LEFT_MID, 0, 20);
   lv_obj_set_auto_realign(tripLabel, true);
 

@@ -1,4 +1,5 @@
 #include "displayapp/screens/Tile.h"
+#include "displayapp/screens/Styles.h"
 #include "displayapp/screens/BatteryIcon.h"
 #include "components/ble/BleController.h"
 #include "displayapp/InfiniTimeTheme.h"
@@ -39,6 +40,7 @@ Tile::Tile(uint8_t screenID,
 
   // Time
   label_time = lv_label_create(lv_scr_act(), nullptr);
+  lv_label_set_recolor(label_time, true);
   lv_label_set_align(label_time, LV_LABEL_ALIGN_CENTER);
   lv_obj_align(label_time, nullptr, LV_ALIGN_IN_TOP_LEFT, 0, 0);
 
@@ -94,7 +96,7 @@ void Tile::Refresh() {
   statusIcons.Update();
   currentDateTime = std::chrono::time_point_cast<std::chrono::minutes>(dateTimeController.CurrentDateTime());
   if (currentDateTime.IsUpdated()) {
-    lv_label_set_text(label_time, dateTimeController.FormattedTime().c_str());
+    lv_label_set_text_fmt(label_time, "%s %s", promptArrows, dateTimeController.FormattedTime().c_str());
   }
 }
 

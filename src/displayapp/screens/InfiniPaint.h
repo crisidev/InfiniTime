@@ -1,6 +1,7 @@
 #pragma once
 
 #include <lvgl/lvgl.h>
+#include "displayapp/InfiniTimeTheme.h"
 #include <cstdint>
 #include <algorithm> // std::fill
 #include "displayapp/screens/Screen.h"
@@ -34,7 +35,7 @@ namespace Pinetime {
         static constexpr uint16_t height = 10;
         static constexpr uint16_t bufferSize = width * height;
         lv_color_t b[bufferSize];
-        lv_color_t selectColor = LV_COLOR_WHITE;
+        lv_color_t selectColor = Colors::fg;
         uint8_t color = 2;
       };
     }

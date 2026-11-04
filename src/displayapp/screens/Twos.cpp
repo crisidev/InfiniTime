@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <lvgl/lvgl.h>
+#include "displayapp/InfiniTimeTheme.h"
 
 using namespace Pinetime::Applications::Screens;
 
@@ -13,11 +14,11 @@ Twos::Twos() {
   };
 
   static constexpr colorPair colors[nColors] = {
-    {LV_COLOR_MAKE(0xcd, 0xc0, 0xb4), LV_COLOR_BLACK},
-    {LV_COLOR_MAKE(0xef, 0xdf, 0xc6), LV_COLOR_BLACK},
-    {LV_COLOR_MAKE(0xef, 0x92, 0x63), LV_COLOR_WHITE},
-    {LV_COLOR_MAKE(0xf7, 0x61, 0x42), LV_COLOR_WHITE},
-    {LV_COLOR_MAKE(0x00, 0x7d, 0xc5), LV_COLOR_WHITE},
+    {Colors::bgAlt, Colors::fg},
+    {Colors::bg, Colors::fg},
+    {Colors::orange, Colors::onHighlight},
+    {Colors::red, Colors::onHighlight},
+    {Colors::blue, Colors::onHighlight},
   };
 
   gridDisplay = lv_table_create(lv_scr_act(), nullptr);
@@ -25,7 +26,7 @@ Twos::Twos() {
   for (size_t i = 0; i < nColors; i++) {
     lv_style_init(&cellStyles[i]);
 
-    lv_style_set_border_color(&cellStyles[i], LV_STATE_DEFAULT, lv_color_hex(0xbbada0));
+    lv_style_set_border_color(&cellStyles[i], LV_STATE_DEFAULT, Colors::background);
     lv_style_set_border_width(&cellStyles[i], LV_STATE_DEFAULT, 3);
     lv_style_set_bg_opa(&cellStyles[i], LV_STATE_DEFAULT, LV_OPA_COVER);
     lv_style_set_bg_color(&cellStyles[i], LV_STATE_DEFAULT, colors[i].bg);
@@ -60,7 +61,7 @@ Twos::Twos() {
   lv_label_set_align(scoreText, LV_ALIGN_IN_LEFT_MID);
   lv_obj_align(scoreText, nullptr, LV_ALIGN_IN_TOP_LEFT, 0, 0);
   lv_label_set_recolor(scoreText, true);
-  lv_label_set_text_fmt(scoreText, "Score #FFFF00 %i#", score);
+  lv_label_set_text_fmt(scoreText, "Score #e0af68 %i#", score);
 }
 
 Twos::~Twos() {
@@ -103,7 +104,7 @@ bool Twos::tryMerge(int newRow, int newCol, int oldRow, int oldCol) {
       if (!grid[newRow][newCol].merged) {
         grid[newRow][newCol].value *= 2;
         score += grid[newRow][newCol].value;
-        lv_label_set_text_fmt(scoreText, "Score #FFFF00 %i#", score);
+        lv_label_set_text_fmt(scoreText, "Score #e0af68 %i#", score);
         grid[oldRow][oldCol].value = 0;
         grid[newRow][newCol].merged = true;
         return true;

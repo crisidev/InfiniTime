@@ -1,4 +1,5 @@
 #include "displayapp/screens/settings/SettingDisplay.h"
+#include "displayapp/InfiniTimeTheme.h"
 #include <lvgl/lvgl.h>
 #include "displayapp/DisplayApp.h"
 #include "displayapp/Messages.h"
@@ -38,16 +39,7 @@ SettingDisplay::SettingDisplay(Pinetime::Controllers::Settings& settingsControll
   lv_obj_set_height(container1, LV_VER_RES - 50);
   lv_cont_set_layout(container1, LV_LAYOUT_PRETTY_TOP);
 
-  lv_obj_t* title = lv_label_create(lv_scr_act(), nullptr);
-  lv_label_set_text_static(title, "Display timeout");
-  lv_label_set_align(title, LV_LABEL_ALIGN_CENTER);
-  lv_obj_align(title, lv_scr_act(), LV_ALIGN_IN_TOP_MID, 10, 15);
-
-  lv_obj_t* icon = lv_label_create(lv_scr_act(), nullptr);
-  lv_obj_set_style_local_text_color(icon, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_ORANGE);
-  lv_label_set_text_static(icon, Symbols::sun);
-  lv_label_set_align(icon, LV_LABEL_ALIGN_CENTER);
-  lv_obj_align(icon, title, LV_ALIGN_OUT_LEFT_MID, -10, 0);
+  CreatePromptTitle("Display timeout");
 
   char buffer[4];
   for (unsigned int i = 0; i < options.size(); i++) {

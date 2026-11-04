@@ -1,4 +1,5 @@
 #include "displayapp/screens/Dice.h"
+#include "displayapp/InfiniTimeTheme.h"
 #include "displayapp/screens/Screen.h"
 #include "displayapp/screens/Symbols.h"
 #include "components/settings/Settings.h"
@@ -50,7 +51,7 @@ Dice::Dice(Controllers::MotionController& motionController,
   gen.seed(sseq);
 
   lv_obj_t* nCounterLabel = MakeLabel(&jetbrains_mono_bold_20,
-                                      LV_COLOR_WHITE,
+                                      Colors::fg,
                                       LV_LABEL_LONG_EXPAND,
                                       0,
                                       LV_LABEL_ALIGN_CENTER,
@@ -61,7 +62,7 @@ Dice::Dice(Controllers::MotionController& motionController,
                                       0);
 
   lv_obj_t* dCounterLabel = MakeLabel(&jetbrains_mono_bold_20,
-                                      LV_COLOR_WHITE,
+                                      Colors::fg,
                                       LV_LABEL_LONG_EXPAND,
                                       0,
                                       LV_LABEL_ALIGN_CENTER,
@@ -113,7 +114,7 @@ Dice::Dice(Controllers::MotionController& motionController,
   lv_obj_align(btnRoll, lv_scr_act(), LV_ALIGN_IN_BOTTOM_MID, 0, 0);
 
   btnRollLabel = MakeLabel(&jetbrains_mono_bold_20,
-                           LV_COLOR_WHITE,
+                           Colors::fg,
                            LV_LABEL_LONG_EXPAND,
                            0,
                            LV_LABEL_ALIGN_CENTER,

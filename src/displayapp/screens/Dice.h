@@ -1,6 +1,7 @@
 #pragma once
 
 #include "displayapp/apps/Apps.h"
+#include "displayapp/InfiniTimeTheme.h"
 #include "displayapp/screens/Screen.h"
 #include "displayapp/widgets/Counter.h"
 #include "displayapp/Controllers.h"
@@ -31,7 +32,7 @@ namespace Pinetime {
 
         std::minstd_rand gen;
 
-        std::array<lv_color_t, 3> resultColors = {LV_COLOR_YELLOW, LV_COLOR_MAGENTA, LV_COLOR_AQUA};
+        std::array<lv_color_t, 3> resultColors = {Colors::yellow, Colors::magenta, Colors::cyan};
         uint8_t currentColorIndex;
         void NextColor();
 

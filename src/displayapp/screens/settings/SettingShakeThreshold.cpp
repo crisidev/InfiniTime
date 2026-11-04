@@ -1,4 +1,5 @@
 #include "displayapp/screens/settings/SettingShakeThreshold.h"
+#include "displayapp/screens/Styles.h"
 #include <lvgl/lvgl.h>
 #include "displayapp/DisplayApp.h"
 #include "displayapp/screens/Screen.h"
@@ -19,10 +20,8 @@ SettingShakeThreshold::SettingShakeThreshold(Controllers::Settings& settingsCont
                                              System::SystemTask& systemTask)
   : settingsController {settingsController}, motionController {motionController}, systemTask {systemTask} {
 
-  lv_obj_t* title = lv_label_create(lv_scr_act(), nullptr);
-  lv_label_set_text_static(title, "Wake Sensitivity");
-  lv_label_set_align(title, LV_LABEL_ALIGN_CENTER);
-  lv_obj_align(title, lv_scr_act(), LV_ALIGN_IN_TOP_MID, 0, 0);
+  lv_obj_t* title = CreatePromptTitle("Wake Sensitivity");
+  lv_obj_align(title, lv_scr_act(), LV_ALIGN_IN_TOP_LEFT, 0, 0);
 
   positionArc = lv_arc_create(lv_scr_act(), nullptr);
   positionArc->user_data = this;
@@ -43,7 +42,7 @@ SettingShakeThreshold::SettingShakeThreshold(Controllers::Settings& settingsCont
   lv_obj_set_style_local_line_opa(animArc, LV_ARC_PART_BG, LV_STATE_DEFAULT, 0);
   lv_obj_set_style_local_line_opa(animArc, LV_ARC_PART_INDIC, LV_STATE_DEFAULT, LV_OPA_70);
   lv_obj_set_style_local_line_opa(animArc, LV_ARC_PART_KNOB, LV_STATE_DEFAULT, LV_OPA_0);
-  lv_obj_set_style_local_line_color(animArc, LV_ARC_PART_INDIC, LV_STATE_DEFAULT, LV_COLOR_RED);
+  lv_obj_set_style_local_line_color(animArc, LV_ARC_PART_INDIC, LV_STATE_DEFAULT, Colors::red);
   lv_obj_set_style_local_bg_color(animArc, LV_ARC_PART_BG, LV_STATE_CHECKED, LV_COLOR_TRANSP);
 
   animArc->user_data = this;
@@ -89,8 +88,8 @@ void SettingShakeThreshold::Refresh() {
     if (xTaskGetTickCount() - vCalTime > pdMS_TO_TICKS(2000)) {
       vCalTime = xTaskGetTickCount();
       calibrating = 2;
-      lv_obj_set_style_local_bg_color(calButton, LV_BTN_PART_MAIN, LV_STATE_CHECKED, LV_COLOR_RED);
-      lv_obj_set_style_local_bg_color(calButton, LV_BTN_PART_MAIN, LV_STATE_CHECKED, LV_COLOR_RED);
+      lv_obj_set_style_local_bg_color(calButton, LV_BTN_PART_MAIN, LV_STATE_CHECKED, Colors::red);
+      lv_obj_set_style_local_bg_color(calButton, LV_BTN_PART_MAIN, LV_STATE_CHECKED, Colors::red);
       lv_label_set_text_static(calLabel, "Shake!");
     }
   }

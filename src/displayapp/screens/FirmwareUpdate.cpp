@@ -85,11 +85,11 @@ void FirmwareUpdate::DisplayProgression() const {
 }
 
 void FirmwareUpdate::UpdateValidated() {
-  lv_label_set_text_static(percentLabel, "#00ff00 Image Ok!#");
+  lv_label_set_text_static(percentLabel, "#9ece6a Image Ok!#");
 }
 
 void FirmwareUpdate::UpdateError() {
-  lv_label_set_text_static(percentLabel, "#ff0000 Error!#");
+  lv_label_set_text_static(percentLabel, "#f7768e Error!#");
   startTime = xTaskGetTickCount();
 }
 
