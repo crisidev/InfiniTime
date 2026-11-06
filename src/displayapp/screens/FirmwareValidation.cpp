@@ -22,8 +22,8 @@ FirmwareValidation::FirmwareValidation(Pinetime::Controllers::FirmwareValidator&
   labelVersion = lv_label_create(lv_scr_act(), nullptr);
   lv_label_set_recolor(labelVersion, true);
   lv_label_set_text_fmt(labelVersion,
-                        "#565f89 Version# %lu.%lu.%lu\n"
-                        "#565f89 Short Ref# %s\n",
+                        "#737aa2 Version# %lu.%lu.%lu\n"
+                        "#737aa2 Short Ref# %s\n",
                         Version::Major(),
                         Version::Minor(),
                         Version::Patch(),
@@ -48,7 +48,7 @@ FirmwareValidation::FirmwareValidation(Pinetime::Controllers::FirmwareValidator&
     lv_obj_set_size(buttonValidate, 115, 50);
     lv_obj_align(buttonValidate, nullptr, LV_ALIGN_IN_BOTTOM_LEFT, 0, 0);
     lv_obj_set_event_cb(buttonValidate, ButtonEventHandler);
-    SetButtonColor(buttonValidate, Colors::highlight);
+    SetButtonColor(buttonValidate, Colors::green);
 
     labelButtonValidate = lv_label_create(buttonValidate, nullptr);
     lv_label_set_text_static(labelButtonValidate, "Validate");

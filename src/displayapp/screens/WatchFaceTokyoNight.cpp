@@ -12,12 +12,16 @@
 using namespace Pinetime::Applications::Screens;
 
 namespace {
-  // Recolor strings use the Colors:: hex values inline (tags are #565f89 = Colors::comment)
+  constexpr int lowBatteryPercent = 20;
+  constexpr const char* warningArrows = "#e0af68 ❯❯❯#";
+  constexpr const char* alertArrows = "#f7768e ❯❯❯#";
+
+  // Recolor strings use the Colors:: hex values inline (tags are #737aa2 = Colors::muted)
   lv_color_t BatteryColor(int percent) {
     if (percent >= 50) {
       return Colors::green;
     }
-    if (percent >= 20) {
+    if (percent >= lowBatteryPercent) {
       return Colors::yellow;
     }
     return Colors::red;
@@ -94,15 +98,6 @@ WatchFaceTokyoNight::~WatchFaceTokyoNight() {
 }
 
 void WatchFaceTokyoNight::Refresh() {
-  notificationState = notificationManager.AreNewNotificationsAvailable();
-  if (notificationState.IsUpdated()) {
-    if (notificationState.Get()) {
-      lv_label_set_text_static(labelPrompt2, "#bb9af7 You have new mail.#");
-    } else {
-      lv_label_set_text_fmt(labelPrompt2, "%s #7aa2f7 ~# #565f89 _#", promptArrows);
-    }
-  }
-
   currentDateTime = std::chrono::time_point_cast<std::chrono::seconds>(dateTimeController.CurrentDateTime());
   if (currentDateTime.IsUpdated()) {
     uint8_t hour = dateTimeController.Hours();
@@ -120,16 +115,16 @@ void WatchFaceTokyoNight::Refresh() {
         ampm = "PM";
       }
       // No room for both seconds and AM/PM on the first line
-      lv_label_set_text_fmt(labelTime, "%02d:%02d #565f89 %s#", hour, minute, ampm);
+      lv_label_set_text_fmt(labelTime, "%02d:%02d #737aa2 %s#", hour, minute, ampm);
     } else {
       // Seconds are dimmed so HH:MM is what the eye lands on
-      lv_label_set_text_fmt(labelTime, "%02d:%02d#565f89 :%02d#", hour, minute, second);
+      lv_label_set_text_fmt(labelTime, "%02d:%02d#737aa2 :%02d#", hour, minute, second);
     }
 
     currentDate = std::chrono::time_point_cast<std::chrono::days>(currentDateTime.Get());
     if (currentDate.IsUpdated()) {
       lv_label_set_text_fmt(labelDate,
-                            "#565f89 date#  %s %02d %s",
+                            "#737aa2 date#  %s %02d %s",
                             Controllers::DateTime::DayOfWeekShortToStringLow(dateTimeController.DayOfWeek()),
                             dateTimeController.Day(),
                             Controllers::DateTime::MonthShortToStringLow(dateTimeController.Month()));
@@ -141,25 +136,24 @@ void WatchFaceTokyoNight::Refresh() {
   if (batteryPercentRemaining.IsUpdated() || powerPresent.IsUpdated()) {
     SetTextColor(batteryValue, BatteryColor(batteryPercentRemaining.Get()));
     lv_label_set_text_fmt(batteryValue,
-                          "#565f89 batt#  %d%%%s",
+                          "#737aa2 batt#  %d%%%s",
                           batteryPercentRemaining.Get(),
                           batteryController.IsCharging() ? " #e0af68 chg#" : "");
   }
 
   stepCount = motionController.NbSteps();
   if (stepCount.IsUpdated()) {
-    lv_label_set_text_fmt(stepValue, "#565f89 step#  %lu", stepCount.Get());
+    lv_label_set_text_fmt(stepValue, "#737aa2 step#  %lu", stepCount.Get());
   }
 
   heartbeat = heartRateController.HeartRate();
   heartbeatRunning = heartRateController.State() != Controllers::HeartRateController::States::Stopped;
   if (heartbeat.IsUpdated() || heartbeatRunning.IsUpdated()) {
+    // The row only exists while the sensor is running: the rows below move up to fill the gap
+    lv_obj_set_hidden(heartbeatValue, !heartbeatRunning.Get());
     if (heartbeatRunning.Get()) {
       SetTextColor(heartbeatValue, Colors::red);
-      lv_label_set_text_fmt(heartbeatValue, "#565f89 hr#    %d bpm", heartbeat.Get());
-    } else {
-      SetTextColor(heartbeatValue, Colors::comment);
-      lv_label_set_text_static(heartbeatValue, "#565f89 hr#    ---");
+      lv_label_set_text_fmt(heartbeatValue, "#737aa2 hr#    %d bpm", heartbeat.Get());
     }
   }
 
@@ -167,14 +161,38 @@ void WatchFaceTokyoNight::Refresh() {
   bleRadioEnabled = bleController.IsRadioEnabled();
   if (bleState.IsUpdated() || bleRadioEnabled.IsUpdated()) {
     if (!bleRadioEnabled.Get()) {
-      SetTextColor(connectState, Colors::comment);
-      lv_label_set_text_static(connectState, "#565f89 ble#   off");
+      SetTextColor(connectState, Colors::muted);
+      lv_label_set_text_static(connectState, "#737aa2 ble#   off");
     } else if (bleState.Get()) {
       SetTextColor(connectState, Colors::cyan);
-      lv_label_set_text_static(connectState, "#565f89 ble#   connected");
+      lv_label_set_text_static(connectState, "#737aa2 ble#   connected");
     } else {
-      SetTextColor(connectState, Colors::comment);
-      lv_label_set_text_static(connectState, "#565f89 ble#   disconnected");
+      SetTextColor(connectState, Colors::muted);
+      lv_label_set_text_static(connectState, "#737aa2 ble#   disconnected");
+    }
+  }
+
+  // The last prompt turns red on low battery, or yellow when the phone is gone
+  if (batteryPercentRemaining.Get() < lowBatteryPercent && !powerPresent.Get()) {
+    promptState = PromptState::Alert;
+  } else if (bleRadioEnabled.Get() && !bleState.Get()) {
+    promptState = PromptState::Warning;
+  } else {
+    promptState = PromptState::Normal;
+  }
+
+  notificationState = notificationManager.AreNewNotificationsAvailable();
+  if (notificationState.IsUpdated() || promptState.IsUpdated()) {
+    if (notificationState.Get()) {
+      lv_label_set_text_static(labelPrompt2, "#bb9af7 You have new mail.#");
+    } else {
+      const char* arrows = promptArrows;
+      if (promptState.Get() == PromptState::Alert) {
+        arrows = alertArrows;
+      } else if (promptState.Get() == PromptState::Warning) {
+        arrows = warningArrows;
+      }
+      lv_label_set_text_fmt(labelPrompt2, "%s #7aa2f7 ~# #737aa2 _#", arrows);
     }
   }
 }

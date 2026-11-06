@@ -81,12 +81,12 @@ std::unique_ptr<Screen> SystemInfo::CreateScreen1() {
   lv_label_set_recolor(label, true);
   lv_label_set_text_fmt(label,
                         "#e0af68 InfiniTime#\n\n"
-                        "#565f89 Version# %ld.%ld.%ld\n"
-                        "#565f89 Short Ref# %s\n"
-                        "#565f89 Build date#\n"
+                        "#737aa2 Version# %ld.%ld.%ld\n"
+                        "#737aa2 Short Ref# %s\n"
+                        "#737aa2 Build date#\n"
                         "%s\n"
                         "%s\n\n"
-                        "#565f89 Bootloader# %s",
+                        "#737aa2 Bootloader# %s",
                         Version::Major(),
                         Version::Minor(),
                         Version::Patch(),
@@ -146,15 +146,15 @@ std::unique_ptr<Screen> SystemInfo::CreateScreen2() {
   lv_obj_t* label = lv_label_create(lv_scr_act(), nullptr);
   lv_label_set_recolor(label, true);
   lv_label_set_text_fmt(label,
-                        "#565f89 Date# %04d-%02d-%02d\n"
-                        "#565f89 Time# %02d:%02d:%02d\n"
-                        "#565f89 Uptime#\n %02lud %02lu:%02lu:%02lu\n"
-                        "#565f89 Battery# %d%%/%03imV\n"
-                        "#565f89 Backlight# %s\n"
-                        "#565f89 Last reset# %s\n"
-                        "#565f89 Accel.# %s\n"
-                        "#565f89 Touch.# %x.%x.%x\n"
-                        "#565f89 Model# %s",
+                        "#737aa2 Date# %04d-%02d-%02d\n"
+                        "#737aa2 Time# %02d:%02d:%02d\n"
+                        "#737aa2 Uptime#\n %02lud %02lu:%02lu:%02lu\n"
+                        "#737aa2 Battery# %d%%/%03imV\n"
+                        "#737aa2 Backlight# %s\n"
+                        "#737aa2 Last reset# %s\n"
+                        "#737aa2 Accel.# %s\n"
+                        "#737aa2 Touch.# %x.%x.%x\n"
+                        "#737aa2 Model# %s",
                         dateTimeController.Year(),
                         static_cast<uint8_t>(dateTimeController.Month()),
                         dateTimeController.Day(),
@@ -189,16 +189,16 @@ std::unique_ptr<Screen> SystemInfo::CreateScreen3() {
   const auto& bleAddr = bleController.Address();
   auto spiFlashId = spiNorFlash.GetIdentification();
   lv_label_set_text_fmt(label,
-                        "#565f89 BLE MAC#\n"
+                        "#737aa2 BLE MAC#\n"
                         " %02x:%02x:%02x:%02x:%02x:%02x\n"
                         "\n"
-                        "#565f89 SPI Flash# %02x-%02x-%02x\n"
+                        "#737aa2 SPI Flash# %02x-%02x-%02x\n"
                         "\n"
-                        "#565f89 Memory heap#\n"
-                        " #565f89 Free# %d/%d\n"
-                        " #565f89 Min free# %d\n"
-                        " #565f89 Alloc err# %d\n"
-                        " #565f89 Ovrfl err# %d",
+                        "#737aa2 Memory heap#\n"
+                        " #737aa2 Free# %d/%d\n"
+                        " #737aa2 Min free# %d\n"
+                        " #737aa2 Alloc err# %d\n"
+                        " #737aa2 Ovrfl err# %d",
                         bleAddr[5],
                         bleAddr[4],
                         bleAddr[3],
@@ -291,7 +291,7 @@ std::unique_ptr<Screen> SystemInfo::CreateScreen5() {
                            "under the terms of\n"
                            "the GNU General\n"
                            "Public License v3\n"
-                           "#565f89 Source code#\n"
+                           "#737aa2 Source code#\n"
                            "#e0af68 https://github.com/#\n"
                            "#e0af68 InfiniTimeOrg/#\n"
                            "#e0af68 InfiniTime#");

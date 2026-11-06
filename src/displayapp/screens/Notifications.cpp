@@ -455,7 +455,7 @@ Notifications::NotificationItem::NotificationItem(const char* title,
   lv_cont_set_fit(subject_container, LV_FIT_NONE);
 
   lv_obj_t* alert_count = lv_label_create(container, nullptr);
-  lv_obj_set_style_local_text_color(alert_count, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, Colors::comment);
+  lv_obj_set_style_local_text_color(alert_count, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, Colors::muted);
   lv_label_set_text_fmt(alert_count, "%i/%i", notifNr, notifNb);
   lv_obj_align(alert_count, nullptr, LV_ALIGN_IN_TOP_RIGHT, 0, 16);
 
@@ -518,7 +518,7 @@ Notifications::NotificationItem::NotificationItem(const char* title,
       lv_obj_align(bt_accept, nullptr, LV_ALIGN_IN_BOTTOM_LEFT, 0, 0);
       label_accept = lv_label_create(bt_accept, nullptr);
       lv_label_set_text_static(label_accept, Symbols::phone);
-      SetButtonColor(bt_accept, Colors::highlight);
+      SetButtonColor(bt_accept, Colors::green);
 
       bt_reject = lv_btn_create(container, nullptr);
       bt_reject->user_data = this;

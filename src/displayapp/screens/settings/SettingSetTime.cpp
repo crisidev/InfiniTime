@@ -62,7 +62,7 @@ SettingSetTime::SettingSetTime(Pinetime::Controllers::DateTime& dateTimeControll
   lblSetTime = lv_label_create(btnSetTime, nullptr);
   lv_label_set_text_static(lblSetTime, "Set");
   lv_obj_set_style_local_bg_color(btnSetTime, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, Colors::bgAlt);
-  lv_obj_set_style_local_text_color(lblSetTime, LV_LABEL_PART_MAIN, LV_STATE_DISABLED, Colors::comment);
+  lv_obj_set_style_local_text_color(lblSetTime, LV_LABEL_PART_MAIN, LV_STATE_DISABLED, Colors::muted);
   lv_obj_set_event_cb(btnSetTime, SetTimeEventHandler);
 
   UpdateScreen();

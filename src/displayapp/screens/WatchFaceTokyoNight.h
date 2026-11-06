@@ -36,6 +36,8 @@ namespace Pinetime {
         void Refresh() override;
 
       private:
+        enum class PromptState : uint8_t { Normal, Warning, Alert };
+
         Utility::DirtyValue<int> batteryPercentRemaining {};
         Utility::DirtyValue<bool> powerPresent {};
         Utility::DirtyValue<bool> bleState {};
@@ -45,6 +47,7 @@ namespace Pinetime {
         Utility::DirtyValue<uint8_t> heartbeat {};
         Utility::DirtyValue<bool> heartbeatRunning {};
         Utility::DirtyValue<bool> notificationState {};
+        Utility::DirtyValue<PromptState> promptState {};
         Utility::DirtyValue<std::chrono::time_point<std::chrono::system_clock, std::chrono::days>> currentDate;
 
         lv_obj_t* container;

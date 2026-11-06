@@ -8,7 +8,6 @@
 #include "components/datetime/DateTimeController.h"
 #include "components/settings/Settings.h"
 #include "components/battery/BatteryController.h"
-#include "displayapp/widgets/PageIndicator.h"
 #include "displayapp/widgets/StatusIcons.h"
 #include "utility/DirtyValue.h"
 
@@ -48,7 +47,6 @@ namespace Pinetime {
         lv_obj_t* label_time;
         lv_obj_t* btnm1;
 
-        Widgets::PageIndicator pageIndicator;
         Widgets::StatusIcons statusIcons;
 
         const char* btnmMap[8];

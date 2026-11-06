@@ -59,15 +59,15 @@ static void basic_init() {
 
   style_init_reset(&style_box);
   lv_style_set_bg_opa(&style_box, LV_STATE_DEFAULT, LV_OPA_COVER);
-  lv_style_set_radius(&style_box, LV_STATE_DEFAULT, 10);
+  lv_style_set_radius(&style_box, LV_STATE_DEFAULT, cornerRadius);
   lv_style_set_value_font(&style_box, LV_STATE_DEFAULT, theme.font_normal);
 
   style_init_reset(&style_label_white);
   lv_style_set_text_color(&style_label_white, LV_STATE_DEFAULT, Colors::fg);
-  lv_style_set_text_color(&style_label_white, LV_STATE_DISABLED, Colors::comment);
+  lv_style_set_text_color(&style_label_white, LV_STATE_DISABLED, Colors::muted);
 
   style_init_reset(&style_btn);
-  lv_style_set_radius(&style_btn, LV_STATE_DEFAULT, 10);
+  lv_style_set_radius(&style_btn, LV_STATE_DEFAULT, cornerRadius);
   lv_style_set_bg_opa(&style_btn, LV_STATE_DEFAULT, LV_OPA_COVER);
   lv_style_set_bg_color(&style_btn, LV_STATE_DEFAULT, Colors::bg);
   lv_style_set_bg_color(&style_btn, LV_STATE_CHECKED, Colors::highlight);
@@ -75,7 +75,7 @@ static void basic_init() {
 
   lv_style_set_text_color(&style_btn, LV_STATE_DEFAULT, Colors::fg);
   lv_style_set_text_color(&style_btn, LV_STATE_CHECKED, Colors::onHighlight);
-  lv_style_set_text_color(&style_btn, LV_STATE_DISABLED, Colors::comment);
+  lv_style_set_text_color(&style_btn, LV_STATE_DISABLED, Colors::muted);
 
   lv_style_set_pad_all(&style_btn, LV_STATE_DEFAULT, LV_DPX(20));
   lv_style_set_pad_inner(&style_btn, LV_STATE_DEFAULT, LV_DPX(15));
@@ -85,7 +85,7 @@ static void basic_init() {
 
   style_init_reset(&style_bar_indic);
   lv_style_set_bg_opa(&style_bar_indic, LV_STATE_DEFAULT, LV_OPA_COVER);
-  lv_style_set_radius(&style_bar_indic, LV_STATE_DEFAULT, 10);
+  lv_style_set_radius(&style_bar_indic, LV_STATE_DEFAULT, cornerRadius);
 
   style_init_reset(&style_scrollbar);
   lv_style_set_bg_opa(&style_scrollbar, LV_STATE_DEFAULT, LV_OPA_COVER);

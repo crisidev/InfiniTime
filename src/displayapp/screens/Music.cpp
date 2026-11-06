@@ -52,7 +52,7 @@ Music::Music(Pinetime::Controllers::MusicService& music) : musicService(music) {
   lv_obj_t* label;
 
   lv_style_init(&btn_style);
-  lv_style_set_radius(&btn_style, LV_STATE_DEFAULT, 20);
+  lv_style_set_radius(&btn_style, LV_STATE_DEFAULT, cornerRadius);
   lv_style_set_bg_color(&btn_style, LV_STATE_DEFAULT, Colors::bgAlt);
 
   btnVolDown = lv_btn_create(lv_scr_act(), nullptr);

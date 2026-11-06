@@ -54,7 +54,7 @@ Steps::Steps(Controllers::MotionController& motionController, Controllers::Setti
   resetBtn->user_data = this;
   lv_obj_set_event_cb(resetBtn, lap_event_handler);
   lv_obj_set_size(resetBtn, 120, 50);
-  lv_obj_set_style_local_radius(resetBtn, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_RADIUS_CIRCLE);
+  lv_obj_set_style_local_radius(resetBtn, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, cornerRadius);
   lv_obj_set_style_local_bg_color(resetBtn, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, Colors::bgAlt);
   lv_obj_align(resetBtn, lv_scr_act(), LV_ALIGN_IN_BOTTOM_MID, 0, 0);
   resetButtonLabel = lv_label_create(resetBtn, nullptr);
