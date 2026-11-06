@@ -59,6 +59,7 @@ namespace Pinetime {
       PrideFlag,
       Legend,
       TokyoNight,
+      LivingTokyo,
     };
 
     template <Apps>

@@ -433,6 +433,7 @@ list(APPEND SOURCE_FILES
         displayapp/screens/WatchFacePrideFlag.cpp
         displayapp/screens/WatchFaceLegend.cpp
         displayapp/screens/WatchFaceTokyoNight.cpp
+        displayapp/screens/WatchFaceLivingTokyo.cpp
 
         ##
 
