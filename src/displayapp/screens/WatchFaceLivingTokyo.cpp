@@ -72,12 +72,21 @@ namespace {
     {192, 22, 34, 13},
   };
 
-  constexpr Rect mistBands[] = {
-    {0, 150, 150, 3},
-    {60, 172, 180, 3},
-    {0, 194, 170, 3},
-    {90, 216, 150, 3},
+  // Where each layer of fog starts. They all run to the bottom, so it gets denser towards the street
+  constexpr int16_t mistLayerTops[] = {112, 128, 144, 160, 176, 192, 208};
+
+  constexpr lv_point_t bolts[][5] = {
+    {{58, 98}, {50, 112}, {58, 116}, {48, 134}, {54, 150}},
+    {{100, 96}, {106, 108}, {98, 114}, {106, 128}, {102, 150}},
+    {{172, 92}, {180, 108}, {172, 112}, {184, 128}, {178, 150}},
   };
+  constexpr uint8_t boltCount = sizeof(bolts) / sizeof(bolts[0]);
+
+  // How long each stage of a strike lasts: flash, dark, flash
+  constexpr uint32_t strikeDurations[] = {100, 80, 70};
+  constexpr uint8_t strikeLastStage = sizeof(strikeDurations) / sizeof(strikeDurations[0]);
+  constexpr uint32_t strikeMinInterval = 4000;
+  constexpr int16_t flashBottom = 178;
 
   constexpr lv_point_t moonCenter = {198, 30};
   constexpr int16_t moonRadius = 18;
@@ -86,6 +95,8 @@ namespace {
                                   screenSize - 1,
                                   moonCenter.y + moonRadius + 1};
   constexpr lv_area_t cityArea = {0, 98, screenSize - 1, screenSize - 1};
+  // The near buildings hide the rest of the sky
+  constexpr lv_area_t flashArea = {0, 0, screenSize - 1, flashBottom};
 
   constexpr int16_t antennaX = 135;
   constexpr int16_t beaconSize = 6;
@@ -102,7 +113,7 @@ namespace {
 
   constexpr uint32_t dropInterval = 100;
 
-  void Fill(const lv_area_t* clipArea, int16_t x, int16_t y, int16_t width, int16_t height, lv_color_t color, int16_t radius = 0) {
+  void Fill(const lv_area_t* clipArea, int16_t x, int16_t y, int16_t width, int16_t height, lv_color_t color, int16_t radius = 0, lv_opa_t opacity = LV_OPA_COVER) {
     // The scene is drawn once for each strip of the display buffer, so most shapes are skipped here
     if (y > clipArea->y2 || y + height <= clipArea->y1 || x > clipArea->x2 || x + width <= clipArea->x1) {
       return;
@@ -112,6 +123,7 @@ namespace {
     lv_draw_rect_dsc_init(&dsc);
     dsc.bg_color = color;
     dsc.radius = radius;
+    dsc.bg_opa = opacity;
     lv_draw_rect(&area, clipArea, &dsc);
   }
 
@@ -205,6 +217,9 @@ lv_design_res_t WatchFaceLivingTokyo::DrawScene(lv_obj_t* obj, const lv_area_t* 
 
 void WatchFaceLivingTokyo::DrawSky(const lv_area_t* clipArea) {
   const Sky currentSky = sky.Get();
+  if (strikeStage % 2 == 1) {
+    Fill(clipArea, 0, 0, screenSize, flashBottom + 1, Colors::bg);
+  }
   if (currentSky == Sky::Clear) {
     for (size_t i = 0; i < sizeof(stars) / sizeof(stars[0]); i++) {
       const int16_t size = i % 3 == 0 ? 2 : 1;
@@ -223,12 +238,14 @@ void WatchFaceLivingTokyo::DrawMoon(const lv_area_t* clipArea) {
     color = Colors::yellow;
   } else if (batteryPercent.Get() < 20) {
     color = Colors::red;
+  } else if (sky.Get() == Sky::Mist) {
+    color = Colors::muted;
   }
   Fill(clipArea, x, y, diameter, diameter, color, LV_RADIUS_CIRCLE);
 
   // The shadow slides off to the right as the battery fills up
   const int16_t shadowOffset = batteryPercent.Get() * diameter / 100;
-  Fill(clipArea, x + shadowOffset, y, diameter, diameter, Colors::background, LV_RADIUS_CIRCLE);
+  Fill(clipArea, x + shadowOffset, y, diameter, diameter, strikeStage % 2 == 1 ? Colors::bg : Colors::background, LV_RADIUS_CIRCLE);
 
   // An outline, so that the moon is still there on an empty battery
   if (y <= clipArea->y2 && y + diameter > clipArea->y1) {
@@ -242,7 +259,8 @@ void WatchFaceLivingTokyo::DrawMoon(const lv_area_t* clipArea) {
     lv_draw_rect(&area, clipArea, &dsc);
   }
 
-  if (sky.Get() == Sky::Cloudy || sky.Get() == Sky::Rain || sky.Get() == Sky::Snow) {
+  const Sky currentSky = sky.Get();
+  if (currentSky == Sky::Cloudy || currentSky == Sky::Rain || currentSky == Sky::Storm || currentSky == Sky::Snow) {
     for (const auto& cloud : clouds) {
       Fill(clipArea, cloud.x, cloud.y, cloud.width, cloud.height, Colors::bgAlt, cloud.height / 2);
     }
@@ -254,9 +272,14 @@ void WatchFaceLivingTokyo::DrawCity(const lv_area_t* clipArea) {
     Fill(clipArea, building.x, building.top, building.width, screenSize - building.top, Colors::bgAlt);
   }
 
-  if (sky.Get() == Sky::Mist) {
-    for (const auto& band : mistBands) {
-      Fill(clipArea, band.x, band.y, band.width, band.height, Colors::comment);
+  if (strikeStage % 2 == 1) {
+    lv_draw_line_dsc_t dsc;
+    lv_draw_line_dsc_init(&dsc);
+    dsc.color = Colors::fg;
+    dsc.width = 2;
+    const auto& bolt = bolts[boltIndex];
+    for (size_t i = 0; i + 1 < sizeof(bolt) / sizeof(bolt[0]); i++) {
+      lv_draw_line(&bolt[i], &bolt[i + 1], clipArea, &dsc);
     }
   }
 
@@ -275,6 +298,13 @@ void WatchFaceLivingTokyo::DrawCity(const lv_area_t* clipArea) {
         Fill(clipArea, x, y, windowWidth, windowHeight, color);
         windowIndex++;
       }
+    }
+  }
+
+  // In front of everything, so the windows glow through it. Only redrawn with what's behind it
+  if (sky.Get() == Sky::Mist) {
+    for (const int16_t top : mistLayerTops) {
+      Fill(clipArea, 0, top, screenSize, screenSize - top, Colors::comment, 0, LV_OPA_10);
     }
   }
 }
@@ -300,8 +330,9 @@ WatchFaceLivingTokyo::Sky WatchFaceLivingTokyo::CurrentSky() const {
       return Sky::Cloudy;
     case Icons::CloudShowerHeavy:
     case Icons::CloudSunRain:
-    case Icons::Thunderstorm:
       return Sky::Rain;
+    case Icons::Thunderstorm:
+      return Sky::Storm;
     case Icons::Snow:
       return Sky::Snow;
     case Icons::Smog:
@@ -365,8 +396,9 @@ void WatchFaceLivingTokyo::RefreshBillboard(uint32_t now) {
 }
 
 void WatchFaceLivingTokyo::CreatePrecipitation() {
-  const bool isRain = sky.Get() == Sky::Rain;
-  if (!isRain && sky.Get() != Sky::Snow) {
+  const Sky currentSky = sky.Get();
+  const bool isRain = currentSky == Sky::Rain || currentSky == Sky::Storm;
+  if (!isRain && currentSky != Sky::Snow) {
     return;
   }
   for (uint8_t i = 0; i < dropCount; i++) {
@@ -395,7 +427,8 @@ void WatchFaceLivingTokyo::RefreshPrecipitation(uint32_t now) {
   }
   lastDropMove = now;
 
-  const bool isRain = sky.Get() == Sky::Rain;
+  const Sky currentSky = sky.Get();
+  const bool isRain = currentSky == Sky::Rain || currentSky == Sky::Storm;
   const lv_coord_t fall = isRain ? 14 : 3;
   for (uint8_t i = 0; i < dropCount; i++) {
     auto& position = dropPositions[i];
@@ -415,6 +448,22 @@ void WatchFaceLivingTokyo::RefreshPrecipitation(uint32_t now) {
   }
 }
 
+void WatchFaceLivingTokyo::RefreshLightning(uint32_t now) {
+  if (sky.Get() != Sky::Storm || static_cast<int32_t>(now - nextStrikeChange) < 0) {
+    return;
+  }
+  if (strikeStage < strikeLastStage) {
+    nextStrikeChange = now + strikeDurations[strikeStage];
+    strikeStage++;
+  } else {
+    strikeStage = 0;
+    boltIndex = (boltIndex + 1) % boltCount;
+    // Up to about 7s more, from the hash of the time
+    nextStrikeChange = now + strikeMinInterval + static_cast<uint8_t>((now >> 4) * 167) * 28;
+  }
+  lv_obj_invalidate_area(scene, &flashArea);
+}
+
 void WatchFaceLivingTokyo::Refresh() {
   RefreshTime();
 
@@ -431,6 +480,8 @@ void WatchFaceLivingTokyo::Refresh() {
 
   sky = CurrentSky();
   if (sky.IsUpdated()) {
+    strikeStage = 0;
+    nextStrikeChange = lv_tick_get() + strikeMinInterval / 2;
     DeletePrecipitation();
     CreatePrecipitation();
     lv_obj_invalidate(scene);
@@ -445,4 +496,5 @@ void WatchFaceLivingTokyo::Refresh() {
   RefreshBeacon(now);
   RefreshBillboard(now);
   RefreshPrecipitation(now);
+  RefreshLightning(now);
 }

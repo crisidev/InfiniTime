@@ -41,7 +41,7 @@ namespace Pinetime {
         void Refresh() override;
 
       private:
-        enum class Sky : uint8_t { Clear, Cloudy, Rain, Snow, Mist };
+        enum class Sky : uint8_t { Clear, Cloudy, Rain, Storm, Snow, Mist };
 
         static lv_design_res_t DrawScene(lv_obj_t* obj, const lv_area_t* clipArea, lv_design_mode_t mode);
         void DrawSky(const lv_area_t* clipArea);
@@ -52,6 +52,7 @@ namespace Pinetime {
         void RefreshBeacon(uint32_t now);
         void RefreshBillboard(uint32_t now);
         void RefreshPrecipitation(uint32_t now);
+        void RefreshLightning(uint32_t now);
         void CreatePrecipitation();
         void DeletePrecipitation();
         uint16_t LitWindowLevel() const;
@@ -78,6 +79,11 @@ namespace Pinetime {
         std::array<lv_obj_t*, dropCount> drops {};
         std::array<lv_point_t, dropCount> dropPositions {};
         uint32_t lastDropMove = 0;
+
+        // Odd stages of a strike are lit, as the sky flashes twice
+        uint8_t strikeStage = 0;
+        uint8_t boltIndex = 0;
+        uint32_t nextStrikeChange = 0;
 
         bool beaconLit = false;
         bool billboardLit = false;
