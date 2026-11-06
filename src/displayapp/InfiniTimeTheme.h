@@ -34,7 +34,7 @@ namespace Colors {
 };
 
 // Corner radius of boxes, buttons and bars
-static constexpr lv_style_int_t cornerRadius = 4;
+static constexpr lv_style_int_t cornerRadius = 8;
 
 /**
  * Set a button's fill color, and a text color that stays readable on it

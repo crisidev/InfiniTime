@@ -37,7 +37,7 @@ Tile::Tile(uint8_t screenID,
 
   settingsController.SetAppMenu(screenID);
 
-  // tmux-style status bar: "1* 2 3" on the left, then the time and status icons on the right
+  // tmux-style status bar: page numbers on the left, the current one in blue, then the time and status icons on the right
   lv_obj_t* statusBar = lv_obj_create(lv_scr_act(), nullptr);
   lv_obj_set_size(statusBar, LV_HOR_RES, statusBarHeight);
   lv_obj_set_pos(statusBar, 0, 0);
@@ -49,7 +49,7 @@ Tile::Tile(uint8_t screenID,
   char pages[64] = {};
   size_t length = 0;
   for (uint8_t i = 0; i < numScreens && length < sizeof(pages); i++) {
-    length += snprintf(pages + length, sizeof(pages) - length, i == screenID ? "#7aa2f7 %d*# " : "#737aa2 %d# ", i + 1);
+    length += snprintf(pages + length, sizeof(pages) - length, i == screenID ? "#7aa2f7 %d# " : "#737aa2 %d# ", i + 1);
   }
   lv_label_set_text(label_pages, pages);
   lv_obj_align(label_pages, statusBar, LV_ALIGN_IN_LEFT_MID, 6, 0);
